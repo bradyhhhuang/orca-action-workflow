@@ -25,10 +25,13 @@ class Bookmark:
     
     def update(self, new_time: dt.datetime):
         self.last_processed = new_time
-        with open(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', 'w') as f:
-            json.dump({'last_processed': self.last_processed.isoformat()}, f)
-        self.client.upload_file(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', self.bucket, f'{self.folder}/{self.hydrophone}_bookmark.json')
-        self.tmp_dir.cleanup()
+        try:
+            with open(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', 'w') as f:
+                json.dump({'last_processed': self.last_processed.isoformat()}, f)
+            self.client.upload_file(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', self.bucket, f'{self.folder}/{self.hydrophone}_bookmark.json')
+            self.tmp_dir.cleanup()
+        except FileNotFoundError as e:
+            print(f"Error updating bookmark: {e}")
     
     def load(self):
         try:
@@ -37,7 +40,6 @@ class Bookmark:
             with open(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', 'r') as f:
                 data = json.load(f)
                 self.last_processed = dt.datetime.fromisoformat(data['last_processed'])
-            self.tmp_dir.cleanup()
         except ClientError as e:
             if e.response['Error']['Code'] == '404':
                 print(f"No existing bookmark found for {self.hydrophone}. Starting fresh.")
