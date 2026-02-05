@@ -39,6 +39,7 @@ class TestBookmark(unittest.TestCase):
         self.mock_hydrophone = MagicMock()
         self.mock_hydrophone.value.save_bucket = 'test-bucket'
         self.mock_hydrophone.value.save_folder = 'test-folder'
+        self.mock_hydrophone.value.bookmark_folder = 'test-folder'
         self.mock_hydrophone.value.name = 'test_hydrophone'
     
     @patch('git_action_psd_upload.boto3.client')
