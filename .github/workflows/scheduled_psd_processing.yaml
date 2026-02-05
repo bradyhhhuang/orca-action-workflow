@@ -34,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.9.18"
+          python-version: "3.11"
           cache: 'pip'
           cache-dependency-path: requirements_pipeline.txt
 
@@ -61,21 +61,21 @@ jobs:
       - name: Process S3 data
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          python PSD_parquet_processing_scripts/git_action_batch.py --hydrophone ${{ matrix.hydrophone }}
+          python PSD_parquet_processing_scripts/git_action_psd_upload.py --hydrophone ${{ matrix.hydrophone }}
 
-      - name: Commit processed data to repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # - name: Commit processed data to repository
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git pull
-          git add .
+      #     git pull
+      #     git add .
 
-          # Only commit if there are changes
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
+      #     # Only commit if there are changes
+      #     if git diff --cached --quiet; then
+      #       echo "No changes to commit"
+      #       exit 0
+      #     fi
 
-          git commit -m "Automated data processing for ${{ matrix.hydrophone }} ($(date -u +'%Y-%m-%d %H:%M UTC'))"
-          git push
+      #     git commit -m "Automated data processing for ${{ matrix.hydrophone }} ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+      #     git push
