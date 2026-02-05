@@ -15,10 +15,10 @@ from orcasound_noise.utils.file_connector import S3FileConnector
 # Bookmarking
 class Bookmark:
     def __init__(self, hydrophone: Hydrophone, last_processed: dt.datetime = None):
-        self.bookmark_path = f"s3://{hydrophone.value.save_bucket}/{hydrophone.value.save_folder}/{hydrophone.value.name}_bookmark.json"
+        self.bookmark_path = f"s3://{hydrophone.value.save_bucket}/{hydrophone.value.bookmark_folder}/{hydrophone.value.name}_bookmark.json"
         self.hydrophone = hydrophone.value.name
         self.bucket = hydrophone.value.save_bucket
-        self.folder = hydrophone.value.save_folder
+        self.folder = hydrophone.value.bookmark_folder
         self.last_processed = last_processed
         self.tmp_dir = tempfile.TemporaryDirectory()
         self.client = boto3.client('s3')
