@@ -55,7 +55,7 @@ def process_upload_psd(start_time: dt.datetime, end_time: dt.datetime,
                                      delta_t=1, mode='safe',
                                      )
     
-    psd_path = pipeline.generate_parquet_file(start_time, 
+    psd_path, bb_path = pipeline.generate_parquet_file(start_time, 
                                         end_time, 
                                         upload_to_s3=True,
                                         partitioning=True)
@@ -80,6 +80,9 @@ def main():
     bookmark = Bookmark(hydrophone)
     bookmark.load()
     start_time = bookmark.last_processed or (now - dt.timedelta(hours=1))
+    # if the bookmark is older than 6 hours, reset to 1 hour ago to avoid processing large amounts of data at once
+    if start_time < now - dt.timedelta(hours=6):
+        start_time = now - dt.timedelta(hours=1)
     end_time = now
 
     file_connector = S3FileConnector(hydrophone)
