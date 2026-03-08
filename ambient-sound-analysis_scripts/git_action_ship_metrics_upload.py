@@ -9,7 +9,6 @@ import json
 import tempfile
 
 import boto3
-from botocore.exceptions import ClientError
 import polars as pl
 
 # importing data processing libraries
