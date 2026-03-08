@@ -40,3 +40,20 @@ flowchart TB
     n20@{ shape: rounded}
 ```
 
+## Automated pipeline for ship monitor data to ship metrics parquet files
+
+see git_action_ship_metrics_upload.py
+
+### Purpose
+
+The purpose of this GitHub Actions workflow is to asynchronously automate the process of combining broadband sound data with ship monitoring data to calculate ship metrics and publish the resulting Parquet files to an S3 bucket. These stored ship metrics enable further analysis of ship noise within the Orcasound Lab monitoring area.
+
+### Script/Workflow Features
+
+* Load ship monitoring data from M2
+    - start_time: current_date - 8 days 
+    - end_time: current_date - 1 days
+* Load sound broadband data between start_time and end_time
+* Calculate metrics
+    - Sound related metrics will be None if there are no sound data between start_time and end_time
+* Upload to S3 and bookmark the last processed time
