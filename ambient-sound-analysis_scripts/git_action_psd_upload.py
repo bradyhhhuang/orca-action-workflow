@@ -22,22 +22,24 @@ class Bookmark:
         self.last_processed = last_processed
         self.tmp_dir = tempfile.TemporaryDirectory()
         self.client = boto3.client('s3')
+        self.temp_bookmark_path = f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json'
+        self.s3_bookmark_path = f'{self.folder}/{self.hydrophone}_bookmark.json'
     
     def update(self, new_time: dt.datetime):
         self.last_processed = new_time
         try:
-            with open(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', 'w') as f:
+            with open(self.temp_bookmark_path, 'w') as f:
                 json.dump({'last_processed': self.last_processed.isoformat()}, f)
-            self.client.upload_file(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', self.bucket, f'{self.folder}/{self.hydrophone}_bookmark.json')
+            self.client.upload_file(self.temp_bookmark_path, self.bucket, self.s3_bookmark_path)
             self.tmp_dir.cleanup()
         except FileNotFoundError as e:
             print(f"Error updating bookmark: {e}")
     
     def load(self):
         try:
-            self.client.head_object(Bucket=self.bucket, Key=f'{self.folder}/{self.hydrophone}_bookmark.json')
-            self.client.download_file(self.bucket, f'{self.folder}/{self.hydrophone}_bookmark.json', f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json')
-            with open(f'{self.tmp_dir.name}/{self.hydrophone}_bookmark.json', 'r') as f:
+            self.client.head_object(Bucket=self.bucket, Key=self.s3_bookmark_path)
+            self.client.download_file(self.bucket, self.s3_bookmark_path, self.temp_bookmark_path)
+            with open(self.temp_bookmark_path, 'r') as f:
                 data = json.load(f)
                 self.last_processed = dt.datetime.fromisoformat(data['last_processed'])
         except ClientError as e:
@@ -49,6 +51,13 @@ def process_upload_psd(start_time: dt.datetime, end_time: dt.datetime,
                        hydrophone: Hydrophone, bookmark: Bookmark, file_connector: S3FileConnector):
     
     """
+    Process and upload PSD parquet files for a given hydrophone and time range.
+    Args:
+        start_time (dt.datetime): Start time for processing.
+        end_time (dt.datetime): End time for processing.
+        hydrophone (Hydrophone): Hydrophone object containing metadata.
+        bookmark (Bookmark): Bookmark object for tracking last processed time.
+        file_connector (S3FileConnector): File connector for S3 interactions.
     """
     pipeline = NoiseAnalysisPipeline(hydrophone,
                                      delta_f=1, bands=12,
@@ -83,7 +92,7 @@ def main():
     # if the bookmark is older than 6 hours, reset to 1 hour ago to avoid processing large amounts of data at once
     if start_time < now - dt.timedelta(hours=6):
         start_time = now - dt.timedelta(hours=1)
-    end_time = now
+    end_time = now - dt.timedelta(minutes=5)  # buffer to ensure all data is available
 
     file_connector = S3FileConnector(hydrophone)
     process_upload_psd(start_time, end_time, hydrophone, bookmark, file_connector)
