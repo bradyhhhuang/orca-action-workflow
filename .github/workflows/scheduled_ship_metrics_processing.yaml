@@ -1,8 +1,8 @@
-name: Scheduled PSD Processing
+name: Scheduled Ship Metrics Processing
 
 on:
   schedule:
-    - cron: "15 * * * *"   # every hour (UTC)
+    - cron: "30 3 * * 1"   # every Sunday at 15:30 (UTC)
   workflow_dispatch:
 
 jobs:
