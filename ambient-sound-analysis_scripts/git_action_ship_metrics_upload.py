@@ -61,9 +61,9 @@ def main():
 
     if "comm_bb" not in lf_bb.collect_schema().names():
         lf_bb = lf_bb.with_columns(
-            bb = pl.col("0"),
-            comm_bb = pl.lit(1) * pl.col("0"),
-            ship_bb = pl.lit(1) * pl.col("0")
+            bb = pl.col("bb_o"),
+            comm_bb = pl.lit(1) * pl.col("comm_bb_o"),
+            ship_bb = pl.lit(1) * pl.col("ship_bb_o")
         )
     print(f"Sound Data Loaded.")
 
