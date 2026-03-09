@@ -2,7 +2,7 @@ name: Scheduled Ship Metrics Processing
 
 on:
   schedule:
-    - cron: "30 15 * * 1"   # every Monday at 15:30 (UTC)  
+    - cron: "30 22 * * 1"   # every Monday at 22:30 (UTC)  
   workflow_dispatch:
 
 jobs:
