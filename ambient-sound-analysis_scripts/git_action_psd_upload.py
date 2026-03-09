@@ -83,7 +83,8 @@ def main():
     args = parser.parse_args()
     hydrophone = Hydrophone[args.hydrophone.upper()]
     
-    now = dt.datetime.now(pytz.timezone('US/Pacific'))
+    pst_fixed = dt.timezone(dt.timedelta(hours=-8), name="PST")
+    now = dt.datetime.now(pst_fixed)
 
     # Load Bookmark
     bookmark = Bookmark(hydrophone)
