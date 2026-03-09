@@ -1,11 +1,7 @@
 
 # importing general Python libraries
 import datetime as dt
-# import logging
-# import pytz
 import json
-# import argparse
-# import time
 import tempfile
 
 import boto3
