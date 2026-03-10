@@ -42,32 +42,25 @@ def main():
 
     load_dotenv()
 
-    print("M2 Data loading...")
+    print("M2 data loading...")
     # For regular weekly data
     ship_pipeline = ShipAnalysisPipeline()
     lf_ais, lf_radar = ship_pipeline.get_raw_data_from_m2()
-    print(f"M2 Data loaded.")
+    print(f"M2 data loaded.")
     
-    print("Sound Data loading...")
-    start_date, end_date = ship_pipeline.start_date, ship_pipeline.end_date
+    print("Sound data loading...")
+    start_date, end_date = ship_pipeline.get_sdate_edate(lf_radar, lf_ais)
     start = dt.datetime.combine(start_date, dt.time.min)
     end = dt.datetime.combine(end_date, dt.time.max)
     ac_orcalab = PartitionedAccessor(Hydrophone.ORCASOUND_LAB, start, end)
     _, lf_bb = ac_orcalab.get_dataframes(lazy=True)
+    print(f"Sound data loaded.")
 
-    if "comm_bb" not in lf_bb.collect_schema().names():
-        lf_bb = lf_bb.with_columns(
-            bb = pl.col("bb_o"),
-            comm_bb = pl.lit(1) * pl.col("comm_bb_o"),
-            ship_bb = pl.lit(1) * pl.col("ship_bb_o")
-        )
-    print(f"Sound Data Loaded.")
-
-    print("Ship Metrics Calculating...")
+    print("Ship metrics calculating...")
     ship_pipeline.get_ship_metrics_parquet(lf_radar, lf_ais, lf_bb, 
                                              partitioning=True, upload_to_s3=True, 
                                              pqt_folder_override=None)
-    print(f"Ship Metrics Calculated.")
+    print(f"Ship metrics calculated.")
 
     # update bookmark
     print(f"Updating bookmark with last processed dates: {start_date.isoformat()} to {end_date.isoformat()}")
