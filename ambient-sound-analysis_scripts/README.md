@@ -50,9 +50,9 @@ The purpose of this GitHub Actions workflow is to asynchronously automate the pr
 
 ### Script/Workflow Features
 
-* Load ship monitoring data from M2
-    - start_time: current_date - 8 days 
-    - end_time: current_date - 1 days
+* Load ship tracking data. The start_time and end_time are parsed from the weekly .zip file provided by M2. They are typically defined as follows, though they may vary slightly depending on the source file:
+    - start_time: current_date - 8 days
+    - end_time: current_date - 1 day
 * Load sound broadband data between start_time and end_time
 * Calculate metrics
     - Sound related metrics will be None if there are no sound data between start_time and end_time
