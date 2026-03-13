@@ -2,7 +2,7 @@ name: Scheduled PSD Processing
 
 on:
   schedule:
-    # - cron: "15 * * * *"   # every hour (UTC)
+    - cron: "15 * * * *"   # every hour (UTC)
   workflow_dispatch:
 
 jobs:
