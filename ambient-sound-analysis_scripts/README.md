@@ -39,4 +39,6 @@ flowchart TB
     n19@{ shape: rounded}
     n20@{ shape: rounded}
 ```
+### Note on Orca-hls-utils
 
+Currently using [this fork](https://github.com/ayushmall0710/orca-hls-utils/commit/18e72ed8f81391629ad64462172c56711134c970) of orca-hls-utils because of bugs in get_next_clip() and with time zone handling.

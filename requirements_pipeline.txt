@@ -1,4 +1,5 @@
 git+https://github.com/kkroening/ffmpeg-python
-orcasound_noise@git+https://github.com/orcasound/ambient-sound-analysis@psd-calc-adjustments
+orcasound_noise@git+https://github.com/orcasound/ambient-sound-analysis@MSDS-2026-main
 pytz
 boto3
+s3fs
