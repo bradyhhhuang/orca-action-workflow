@@ -39,6 +39,9 @@ flowchart TB
     n19@{ shape: rounded}
     n20@{ shape: rounded}
 ```
+### Note on Orca-hls-utils
+Currently using [this fork](https://github.com/ayushmall0710/orca-hls-utils/commit/18e72ed8f81391629ad64462172c56711134c970) of orca-hls-utils because of bugs in get_next_clip() and with time zone handling.
+
 
 ## Automated pipeline for ship monitor data to ship metrics parquet files
 
@@ -57,3 +60,4 @@ The purpose of this GitHub Actions workflow is to asynchronously automate the pr
 * Calculate metrics
     - Sound related metrics will be None if there are no sound data between start_time and end_time
 * Upload to S3 and bookmark the last processed time
+
